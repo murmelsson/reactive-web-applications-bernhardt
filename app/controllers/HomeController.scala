@@ -15,11 +15,11 @@ import play.api.libs.iteratee._
 import play.api.Logger
 
 /**
- * This controller creates an `Action` to handle HTTP requests to the
- * application's home page.
- */
+  * This controller creates an `Action` to handle HTTP requests to the
+  * application's home page.
+  */
 @Singleton
-class HomeController @Inject() extends Controller {
+class HomeController @Inject()(ws: WSClient) extends Controller {
 
   /**
     * Create an Action to render an HTML page with a welcome message.
@@ -31,40 +31,43 @@ class HomeController @Inject() extends Controller {
     Ok(views.html.index("Your new application is ready."))
   }
 
-    def tweets = Action.async {
+  /**
+    * tweets uses Twitter API to retrieve tweets about whatever string we put in the tracking-query.
+    */
+  def tweets = Action.async {
 
-      val loggingIteratee = Iteratee.foreach[Array[Byte]] { array =>
-        Logger.info(array.map(_.toChar).mkString)
+    val loggingIteratee = Iteratee.foreach[Array[Byte]] { array =>
+      Logger.info(array.map(_.toChar).mkString)
+    }
+
+    credentials.map { case (consumerKey, requestToken) =>
+      ws
+        .url("https://stream.twitter.com/1.1/statuses/filter.json")
+        .sign(OAuthCalculator(consumerKey, requestToken))
+        .withQueryString("track" -> "reactive")
+        .get { response =>
+          Logger.info("Status: " + response.status)
+          loggingIteratee
+        }.map { _ =>
+        Ok("Stream closed")
+      }
+    } getOrElse {
+      Future {
+        InternalServerError("Twitter credentials missing")
       }
 
-      credentials.map { case (consumerKey, requestToken) =>
-          WS
-            .url("https://stream.twitter.com/1.1/statuses/filter.json")
-            .sign(OAuthCalculator(consumerKey, requestToken))
-            .withQueryString("track" -> "reactive")
-            .get { response =>
-              Logger.info("Status: " + response.status)
-              loggingIteratee
-            }.map { _ =>
-              Ok("Stream closed")
-            }
-        } getOrElse {
-          Future {
-            InternalServerError("Twitter credentials missing")
-          }
-
-        }
-      }
+    }
+  }
 
 
-    def credentials: Option[(ConsumerKey, RequestToken)] = for {
-      apiKey <- Play.configuration.getString("twitter.apiKey")
-      apiSecret <- Play.configuration.getString("twitter.apiSecret")
-      token <- Play.configuration.getString("twitter.token")
-      tokenSecret <- Play.configuration.getString("twitter.tokenSecret")
-    } yield (
-      ConsumerKey(apiKey, apiSecret),
-      RequestToken(token, tokenSecret)
-      )
+  def credentials: Option[(ConsumerKey, RequestToken)] = for {
+    apiKey <- Play.configuration.getString("twitter.apiKey")
+    apiSecret <- Play.configuration.getString("twitter.apiSecret")
+    token <- Play.configuration.getString("twitter.token")
+    tokenSecret <- Play.configuration.getString("twitter.tokenSecret")
+  } yield (
+    ConsumerKey(apiKey, apiSecret),
+    RequestToken(token, tokenSecret)
+    )
 
 }
