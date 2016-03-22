@@ -34,11 +34,11 @@ class Application extends Controller {
         }.map { _ =>
           Ok("Stream closed")
         }
-      } getOrElse {
-        Future {
-          InternalServerError("Twitter credentials missing")
-        }
+    } getOrElse {
+      Future {
+        InternalServerError("Twitter credentials missing")
       }
+    }
   }
 
 
@@ -49,7 +49,6 @@ class Application extends Controller {
     tokenSecret <- Play.configuration.getString("twitter.tokenSecret")
     } yield (
       ConsumerKey(apiKey, apiSecret),
-      RequestToken(token, tokenSecret)
-    )
+      RequestToken(token, tokenSecret) )
 
 }

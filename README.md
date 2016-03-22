@@ -8,23 +8,26 @@ conf/application-dummy.conf, so that secret keys don't end up in a public repo.
 So if you want to use this repo, you will need to rename the dummy.conf to the standard name, and add your own keys etc.
 
 --
-# Using Play 2.5.0
+# Using Play 2.4.6
 The book (#2.2.2) notes a bug in 2.4.x releases: https://github.com/playframework/playframework/pull/4826
-- but since in March 2016 we have in project/plugins.sbt :
+- but since in March 2016 we have in project/plugins.sbt (when generating the project using the "play-scala" in Activator:
 ```
 // The Play plugin
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.0")
 ```
-... so let's see if we can do without the workarounds also.
+... so my original idea was to just use Play 2.5.0 and change the code where needed
 
-Seems that the old-school file mentioned in section #2.2.3 app/controllers/Application.scala has been replaced with app/controllers/HomeController.scala
+But that idea, ongoing in other branch or two of this repo, has hit some stormy weather, because you need to already be quite
+expert in Play Framework to replace all the 2.5.0 - deprecated (compile or run-time failure) code with the new ways of
+doing things.
 
-So I am not going to switch back to Play 2.4.x, but it means there is going to be a side-project learning from this book,
-here is an example from Listing 2.3 Retrieval of the Configuration, when compiling:
-```
-[warn] /home/murmeister/playapps/twitter-stream/app/controllers/HomeController.scala:32: method configuration in object Play is deprecated: inject the play.api.Environment instead
-[warn]       apiKey <- Play.configuration.getString("twitter.apiKey")
-```
+So for the moment let's go with Play 2.4.6 (last release in 2.4.x series). As luck would have it, i had the sample "my-first-scala-play-app"
+project generated from 2.4.6-template sitting around on laptop, so I first of all copied it into a new standalone project, then
+got the basic Twitter-stream working (much easier with the right template), then did the necessary copy-pasting into this 2.4.6 branch, and push to repo etc.
 
+Then noticed how the brave wee soul murmelsson was warbling in this README about how he was going to use only 2.5.0 for this learning project. Oops, fix that - fixed.
 
+--
+
+(etc etc)
 
