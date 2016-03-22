@@ -25,7 +25,10 @@ So for the moment let's go with Play 2.4.6 (last release in 2.4.x series). As lu
 project generated from 2.4.6-template sitting around on laptop, so I first of all copied it into a new standalone project, then
 got the basic Twitter-stream working (much easier with the right template), then did the necessary copy-pasting into this 2.4.6 branch, and push to repo etc.
 
-Then noticed how the brave wee soul murmelsson was warbling in this README about how he was going to use only 2.5.0 for this learning project. Oops, fix that - fixed.
+(I cannot remember now which template I used back in January, two months is a long time in coding etc. But it was probably something like "just-play-scala", or maybe the old default "play-scala" before they went n started changing everything to match
+the name-change to Lightbend... anyway I think "just-play-scala" is still available from Activator UI, and source code is on GitHub: https://github.com/julienrf/just-play-scala#master
+
+Then after first push to this 2.4.6-branch, noticed how the brave wee soul murmelsson was warbling in this README about how he was going to use only 2.5.0 for this learning project. Oops, fix that - fixed.
 
 --
 

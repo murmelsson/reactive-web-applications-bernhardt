@@ -20,3 +20,7 @@ resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 routesGenerator := InjectedRoutesGenerator
 
 libraryDependencies += "com.ning" % "async-http-client" % "1.9.29"
+
+resolvers += "Typesafe private" at "https://private-repo.typesafe.com/typesafe/maven-releases"
+
+libraryDependencies += "com.typesafe.play.extras" %% "iteratees-extras" % "1.5.0"
