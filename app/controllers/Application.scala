@@ -15,13 +15,16 @@ import play.api.Logger
 import play.api.libs.json._
 import play.extras.iteratees._
 
+import actors.TwitterStreamer
+
 class Application extends Controller {
 
-  def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+  def index = Action { implicit request =>     //request: Request[AnyContent]
+    Ok(views.html.index("Tweets"))
   }
 
-  def tweets = Action.async {
+  // Listing 2.7 implementation of tweets():
+/*  def tweets = Action.async {
     credentials.map { case (consumerKey, requestToken) =>
       val (iteratee, enumerator) = Concurrent.joined[Array[Byte]]
       val jsonStream: Enumerator[JsObject] =
@@ -47,7 +50,12 @@ class Application extends Controller {
         InternalServerError("Couldn't retrieve Twitter-API credentials.")
       }
     }
-  }
+  }*/
+
+  // Listing 2.9 implementation of tweets()-method, returns: WebSocket[String, JsValue]
+  def tweets = WebSocket.acceptWithActor[String, JsValue] {    //[String In, Json-object Out]
+    request => out => TwitterStreamer.props(out)   //f:(RequestHeader) => WebSocket.HandlerProps
+  }                                                // or can say f: RequestHeader => ActorRef => Props
 
   def credentials: Option[(ConsumerKey, RequestToken)] = for {
     apiKey <- Play.configuration.getString("twitter.apiKey")

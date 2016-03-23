@@ -28,9 +28,13 @@ got the basic Twitter-stream working (much easier with the right template), then
 (I cannot remember now which template I used back in January, two months is a long time in coding etc. But it was probably something like "just-play-scala", or maybe the old default "play-scala" before they went n started changing everything to match
 the name-change to Lightbend... anyway I think "just-play-scala" is still available from Activator UI, and source code is on GitHub: https://github.com/julienrf/just-play-scala#master
 
-Then after first push to this 2.4.6-branch, noticed how the brave wee soul murmelsson was warbling in this README about how he was going to use only 2.5.0 for this learning project. Oops, fix that - fixed.
+Then after first push to this 2.4.6-branch, noticed how murmelsson was warbling in this README about how he was going to use only 2.5.0 for this learning project. Oops, fix that - fixed.
 
 --
+On Listing 2.10: seems that it is important to not leave a space between the two sets of brackets in index.scala.html:
+```@(message: String)(implicit request: RequestHeader)```  - is ok
+```@(message: String) (implicit request: RequestHeader)```  - compilation error when trying to create the WebSocket, 
+because the RequestHeader needed by tweets()-method is not in scope. 
 
-(etc etc)
+
 

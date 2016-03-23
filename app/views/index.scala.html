@@ -1,7 +1,23 @@
-@(message: String)
+@(message: String)(implicit request: RequestHeader)
 
-@main("Welcome to Play") {
+@main(message) {
+  <div id="tweets"></div>
+  <script type="text/javascript">
+    console.log("in index.scala.html script");
+    var url = "@routes.Application.tweets().webSocketURL()";  
+    var tweetSocket = new WebSocket(url);
 
-    @play20.welcome(message)
+    tweetSocket.onmessage = function (event) {
+      console.log(event);
+      var data = JSON.parse(event.data);
+      var tweet = document.createElement("p");
+      var text = document.createTextNode(data.text);
+      tweet.appendChild(text);
+      document.getElementById("tweets").appendChild(tweet);
+    };
 
+    tweetSocket.onopen = function () {
+      tweetSocket.send("subscribe");
+    };
+  </script>
 }
