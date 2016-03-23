@@ -57,13 +57,6 @@ class Application extends Controller {
     request => out => TwitterStreamer.props(out)   //f:(RequestHeader) => WebSocket.HandlerProps
   }                                                // or can say f: RequestHeader => ActorRef => Props
 
-  def credentials: Option[(ConsumerKey, RequestToken)] = for {
-    apiKey <- Play.configuration.getString("twitter.apiKey")
-    apiSecret <- Play.configuration.getString("twitter.apiSecret")
-    token <- Play.configuration.getString("twitter.token")
-    tokenSecret <- Play.configuration.getString("twitter.tokenSecret")
-    } yield (
-      ConsumerKey(apiKey, apiSecret),
-      RequestToken(token, tokenSecret) )
+
 
 }
