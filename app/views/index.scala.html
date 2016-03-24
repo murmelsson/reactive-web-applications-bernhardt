@@ -4,20 +4,43 @@
   <div id="tweets"></div>
   <script type="text/javascript">
     console.log("in index.scala.html script");
-    var url = "@routes.Application.tweets().webSocketURL()";  
-    var tweetSocket = new WebSocket(url);
 
-    tweetSocket.onmessage = function (event) {
-      console.log(event);
-      var data = JSON.parse(event.data);
+    function appendTweet (text) {
       var tweet = document.createElement("p");
-      var text = document.createTextNode(data.text);
-      tweet.appendChild(text);
+      var message = document.createTextNode(text);
+      tweet.appendChild(message);
       document.getElementById("tweets").appendChild(tweet);
-    };
+    }
 
-    tweetSocket.onopen = function () {
-      tweetSocket.send("subscribe");
-    };
+    function connect (attempt) {
+      var connectionAttempt = attempt;
+      var url = "@routes.Application.tweets().webSocketURL()";
+      console.log("url: " + url);
+      var tweetSocket = new WebSocket(url);
+
+      tweetSocket.onmessage = function (event) {
+        console.log(event);
+        var data = JSON.parse(event.data);
+        appendTweet(data.text);
+      };
+
+      tweetSocket.onopen = function () {
+        connectionAttempt = 1;
+        tweetSocket.send("subscribe");
+      };
+
+      tweetSocket.onclose = function () {
+        if (connectionAttempt <= 3) {
+          appendTweet("WARNING: Lost server connection, attempting to reconnect. Attempt number " + connectionAttempt);
+          setTimeout (function () {
+            connect(connectionAttempt + 1);
+          }, 5000);
+        } else {
+          alert("The connection with the server was lost.");
+        }
+      };
+    }
+
+    connect(1);
   </script>
 }

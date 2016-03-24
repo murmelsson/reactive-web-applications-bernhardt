@@ -57,6 +57,17 @@ class Application extends Controller {
     request => out => TwitterStreamer.props(out)   //f:(RequestHeader) => WebSocket.HandlerProps
   }                                                // or can say f: RequestHeader => ActorRef => Props
 
-
+  // Listing 2.17 Stream a replicated Twitter feed as an HTTP request:
+  def replicateFeed = Action { implicit request =>
+    Ok.feed(TwitterStreamer.subscribeNode)    //def feed[C](content: Enumerator[C])(implicit writeable: Writeable[C]): Result
+  }
 
 }
+
+
+
+
+
+
+
+

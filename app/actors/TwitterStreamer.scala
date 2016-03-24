@@ -39,7 +39,11 @@ object TwitterStreamer {
       val (be, _) = Concurrent.broadcast(jsonStream)
       broadcastEnumerator = Some(be)
 
-      val url = "https://stream.twitter.com/1.1/statuses/filter.json"
+      //val url = "https://stream.twitter.com/1.1/statuses/filter.json"
+      val maybeMasterNodeUrl = Option(System.getProperty("masterNodeUrl"))
+      val url = maybeMasterNodeUrl.getOrElse {
+        "https://stream.twitter.com/1.1/statuses/filter.json"
+      }
       WS
         .url(url)
         .sign(OAuthCalculator(consumerKey, requestToken))
@@ -75,4 +79,23 @@ object TwitterStreamer {
       enumerator run twitterClient
     }
   }
+
+  def subscribeNode: Enumerator[JsObject] = {
+    if (broadcastEnumerator.isEmpty) {
+      connect()
+    }
+    broadcastEnumerator.getOrElse {
+      Enumerator.empty[JsObject]
+    }
+  }
 }
+
+
+
+
+
+
+
+
+
+
