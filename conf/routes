@@ -1,0 +1,5 @@
+#GET     /test        controllers.Test.testAction
+
+PUT      /import/word/:sourceLang/:word/:targetLang/:translation    controllers.Import.importWord(sourceLang, word, targetLang, translation)
+
+
