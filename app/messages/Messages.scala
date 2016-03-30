@@ -8,3 +8,5 @@ case class FollowerCount(tweetId: BigInt, userId: BigInt, followersCount: Int)
 
 case class StoreReach(tweetId: BigInt, score: Int)
 case class ReachStored(tweetId: BigInt)
+
+case object TweetReachCouldNotBeComputed

@@ -1,36 +1,44 @@
 package actors
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+//import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.actor._
 import akka.pattern.pipe
 import messages._
 import play.api.libs.json.JsArray
 import play.api.libs.oauth.OAuthCalculator
 import play.api.libs.ws.WS
-
+import scala.concurrent.duration._
 import scala.concurrent.Future
 import scala.util.control.NonFatal
-//import play.api.Play.current
+import play.api.Play.current
 
 class TweetReachComputer(userFollowersCounter: ActorRef, storage: ActorRef) //1 ActorRefs as constructor parameters
 extends Actor with ActorLogging with TwitterCredentials {
 
   implicit val executionContext = context.dispatcher   //2 use this.Actor's dispatcher as ec for executing Futures
-
+import scala.concurrent.duration._
   var followerCountsByRetweet = Map.empty[FetchedRetweet, List[FollowerCount]]  //3 cache for currently computed follower-counts for a retweet
+
+  // Reminder of unacknowledged messages every 20 seconds:
+  val retryScheduler: Cancellable = context.system.scheduler.schedule(
+                                      1.second, 20.seconds, self, ResendUnacknowledged)
+
+  override def postStop(): Unit = {
+    retryScheduler.cancel()
+  }
 
   def receive = {
 
     //val originalSender: ActorRef = sender() //in case of Future-failure, capture original sender (as sender may change in the meantime)
-    // val originalSender = sender() does not compile acc IntelliJ
+    //val originalSender = sender() //does not compile, but compiles inside a matching-block.
 
     case ComputeReach(tweetId) =>   //using pipe we avoid concurrent operations issue (race conditions):
     //fetchRetweets(tweetId, sender()) pipeTo self   //4b - Pipe the fetchRetweets Future to this actor itself (original version without recover-path)
-    fetchRetweets(tweetId, sender()).recover {
+    val originalSender = sender()
+    fetchRetweets(tweetId, originalSender).recover {
       case NonFatal(t) =>
-        //RetweetFetchingFailed(tweetId, t, originalSender)
-        RetweetFetchingFailed(tweetId, t, sender())
-
-    } pipeTo self
+        RetweetFetchingFailed(tweetId, t, originalSender)
+     } pipeTo self
 
     case fetchedRetweets: FetchedRetweet =>   //5b - Handle the received result of the Future
       followerCountsByRetweet += fetchedRetweets -> List.empty
@@ -50,7 +58,21 @@ extends Actor with ActorLogging with TwitterCredentials {
       .foreach { key =>
         followerCountsByRetweet = followerCountsByRetweet.filterNot(_._1 == key)  //6 remove state after score has been stored
       }
-  }
+
+    case ResendUnacknowledged =>
+      val unacknowledged = followerCountsByRetweet.filterNot {
+        case (retweet, counts) =>
+          retweet.retweeters.size != counts.size  //only consider cases where counting-up !match
+      }
+      unacknowledged.foreach { case (retweet, counts) =>
+        // send new StoreReach msg to Storage Actor:
+        val score = counts.map(_.followersCount).sum
+        storage ! StoreReach(retweet.tweetId, score)
+      } 
+ }
+
+  
+  case object ResendUnacknowledged
 
   case class FetchedRetweet(tweetId: BigInt, retweeters: List[BigInt], client: ActorRef)
 
@@ -94,6 +116,7 @@ extends Actor with ActorLogging with TwitterCredentials {
       Future.failed(new RuntimeException("You did not correctly configure the Twitter credentials"))
     }
   }
+
 }
 
 
