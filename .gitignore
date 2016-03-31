@@ -1,4 +1,4 @@
-/conf/application.conf
+/conf/twitter.conf
 logs
 target
 /.idea
@@ -7,3 +7,5 @@ target
 /.project
 /.settings
 /RUNNING_PID
+project/project
+project/target
