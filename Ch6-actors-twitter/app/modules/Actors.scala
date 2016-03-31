@@ -9,8 +9,8 @@ class Actors @Inject()(system: ActorSystem)
 extends ApplicationActors {
 
   system.actorOf(
-    //props = StatisticsProvider.props,
-    Props[StatisticsProvider],
+    props = StatisticsProvider.props.withDispatcher("control-aware-dispatcher"),
+    //Props[StatisticsProvider],
     name = "statisticsProvider"
   )
 }
