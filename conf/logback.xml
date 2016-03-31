@@ -16,6 +16,7 @@
   <logger name="akka" level="INFO" />
   <logger name="application" level="DEBUG" />
   <logger name="actors" level="DEBUG" />
+  <logger name="org.jooq" level="INFO" />
 
   <root level="ERROR">
     <appender-ref ref="STDOUT" />
