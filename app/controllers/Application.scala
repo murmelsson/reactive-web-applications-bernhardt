@@ -21,6 +21,7 @@ class Application @Inject() (system: ActorSystem) extends Controller {
     val eventuallyReach = statisticsProvider ? ComputeReach(BigInt(tweetId))
     eventuallyReach.map {
       case tr: TweetReach =>
+        println("Yes! TweetReach found for tweetId: " + ", score: " + tr.score)
         Ok(tr.score.toString)
       case StatisticsProvider.ServiceUnavailable =>
         ServiceUnavailable("Sorry")

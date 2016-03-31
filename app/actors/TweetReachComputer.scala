@@ -34,8 +34,10 @@ import scala.concurrent.duration._
 
     case ComputeReach(tweetId) =>   //using pipe we avoid concurrent operations issue (race conditions):
     //fetchRetweets(tweetId, sender()) pipeTo self   //4b - Pipe the fetchRetweets Future to this actor itself (original version without recover-path)
-    val originalSender = sender()
-    fetchRetweets(tweetId, originalSender).recover {
+    log.info("In TRC-rec-computereach")
+    val originalSender: ActorRef = sender()
+      println("originalSender: " + originalSender)
+    fetchRetweets(tweetId, sender()).recover {
       case NonFatal(t) =>
         RetweetFetchingFailed(tweetId, t, originalSender)
      } pipeTo self
@@ -53,6 +55,7 @@ import scala.concurrent.duration._
     }
 
     case ReachStored(tweetId) =>
+    log.info("Received ReachStored-msg from Storage-Actor in Mongo for tweet {}", tweetId)
     followerCountsByRetweet.keys
       .find(_.tweetId == tweetId)
       .foreach { key =>
@@ -97,9 +100,10 @@ import scala.concurrent.duration._
 
   def fetchRetweets(tweetId: BigInt, client: ActorRef): Future[FetchedRetweet] = {    //11 fetch retweets TODO by using WS calls to Twitter API
   // https://github.com/manuelbernhardt/reactive-web-applications/blob/master/CH06/app/actors/TweetReachComputer.scala
-
+    log.info("In TRC-fetchRetweets...")
     credentials.map {
       case (consumerKey, requestToken) =>
+        log.info("In TRC-fetchRetweets-case")
         WS.url("https://api.twitter.com/1.1/statuses/retweeters/ids.json")
           .sign(OAuthCalculator(consumerKey, requestToken))
           .withQueryString("id" -> tweetId.toString)
