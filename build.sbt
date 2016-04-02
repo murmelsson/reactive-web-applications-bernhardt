@@ -6,8 +6,12 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.7"
 
+resolvers += "Spy Repository" at "http://files.couchbase.com/maven2"
+
 libraryDependencies ++= Seq(
   jdbc,
+  cache,
+  "com.github.mumoshu" %% "play2-memcached-play24" % "0.7.0",
   "org.postgresql" % "postgresql" % "9.3-1101-jdbc4",
   "org.jooq" % "jooq" % "3.7.0",
   "org.jooq" % "jooq-codegen-maven" % "3.7.0",
