@@ -1,0 +1,15 @@
+ah ok, needed to restart the mongodb service...
+
+[info] - play.api.Play - Application started (Dev)
+[info] - actors.CQRSCommandHandler - Recovery completed!
+[info] - actors.SMSHandler - Received message: +358123 register murmelsson
+
+
+murmeister@murmeister-X202E:~$ telnet localhost 6666
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
++358358 register murmelsson
+Registration successful!
+
+

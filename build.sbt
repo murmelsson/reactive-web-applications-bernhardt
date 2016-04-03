@@ -11,6 +11,7 @@ resolvers += "Spy Repository" at "http://files.couchbase.com/maven2"
 libraryDependencies ++= Seq(
   jdbc,
   cache,
+  ws,
   "com.github.mumoshu" %% "play2-memcached-play24" % "0.7.0",
   "org.postgresql" % "postgresql" % "9.3-1101-jdbc4",
   "org.jooq" % "jooq" % "3.7.0",
@@ -18,8 +19,9 @@ libraryDependencies ++= Seq(
   "org.jooq" % "jooq-meta" % "3.7.0",
   "com.ning" % "async-http-client" % "1.9.29",
   "joda-time" % "joda-time" % "2.7",
-  "com.typesafe.akka" %% "akka-persistence" % "2.4.0",
-  "com.typesafe.akka" %% "akka-slf4j" % "2.4.0"
+  "com.github.ironfish" %% "akka-persistence-mongo-casbah" % "0.7.6"
+  //"com.typesafe.akka" %% "akka-persistence" % "2.4.0",
+  //"com.typesafe.akka" %% "akka-slf4j" % "2.4.0"
 )
 
 //resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"

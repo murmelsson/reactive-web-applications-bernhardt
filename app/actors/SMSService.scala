@@ -12,6 +12,7 @@ class SMSService @Inject() (database: Database) extends Actor with ActorLogging 
 
   override def preStart(): Unit = {
     context.actorOf(Props[SMSServer])
+    context.actorOf(Props[CQRSCommandHandler], name = "commandHandler")
   }
 
   def receive = {
