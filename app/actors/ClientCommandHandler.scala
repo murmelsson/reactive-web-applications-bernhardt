@@ -53,9 +53,10 @@ class ClientCommandHandler(phoneNumber: String, userName: String) extends Persis
         (consumerKey, requestToken) <- credentials
         time <- lastSeenMentionTime
       } yield fetchMentions(consumerKey, requestToken, userName, time)
-
+log.info("In CheckMentions for: " + userName + " " + lastSeenMentionTime + maybeMentions.size)
       maybeMentions.foreach { mentions =>
         mentions.map { m =>
+          log.info("In mentions.map..." + m.size)
           Mentions(m)
         } recover { case NonFatal(t) =>
           log.error(t, "Could not fetch mentions")
@@ -122,15 +123,18 @@ class ClientCommandHandler(phoneNumber: String, userName: String) extends Persis
 
   def fetchMentions(consumerKey: ConsumerKey, requestToken: RequestToken, user: String, time: DateTime): Future[Seq[(String, DateTime, String, String)]] = {
     val df = DateTimeFormat.forPattern("EEE MMM dd HH:mm:ss Z yyyy").withLocale(Locale.ENGLISH)
+    log.info("In fetchMentions for user: " + user )
 
     WS.url("https://api.twitter.com/1.1/search/tweets.json")
       .sign(OAuthCalculator(consumerKey, requestToken))
-      .withQueryString("q" -> s"@$user")
+      .withQueryString("q" -> s"%40$user")
+//.withQueryString("q" -> s"%40twitterapi")
       .get()
       .map { response =>
         val mentions = (response.json \ "statuses").as[JsArray].value.map { status =>
           val id = (status \ "id_str").as[String]
           val text = (status \ "text").as[String]
+//log.info("Text: " + text)
           val from = (status \ "user" \ "screen_name").as[String]
           val created_at = df.parseDateTime((status \ "created_at").as[String])
 
@@ -138,6 +142,7 @@ class ClientCommandHandler(phoneNumber: String, userName: String) extends Persis
         }
 
         mentions.filter(_._2.isAfter(time))
+        //mentions
       }
   }
 
