@@ -1,6 +1,3 @@
-/conf/application.conf
-/conf/chapter7.xml
-/conf/twitter.conf
 logs
 target
 /.idea
