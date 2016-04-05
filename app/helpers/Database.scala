@@ -22,4 +22,12 @@ class Database @Inject() (db: play.api.db.Database) {
                          // - recall what the compiler says if we forget to do this:
                          // "Cannot find an implicit ExecutionContext. ...pass an (implicit ec: ExecutionContext)
                          // parameter to your method or import scala.concurrent.ExecutionContext.Implicits.global"
+
+  def withTransaction[A](block: DSLContext => A): Future[A] = Future {
+    db.withTransaction { connection =>
+      val sql = DSL.using(connection, SQLDialect.POSTGRES_9_3)
+      block(sql)
+    }
+  }(Contexts.database)
+
 }

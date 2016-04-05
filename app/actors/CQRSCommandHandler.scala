@@ -2,7 +2,7 @@ package actors
 
 import akka.actor._
 import akka.persistence
-import akka.persistence.{PersistentActor, RecoveryCompleted}
+import akka.persistence.{PersistentActor, RecoveryCompleted, RecoveryFailure}
 
 import scala.concurrent.duration._
 
@@ -16,8 +16,8 @@ class CQRSCommandHandler extends PersistentActor with ActorLogging {
     // "If there is a problem with recovering the state of the actor from the journal when the actor is started,
     // onRecoveryFailure is called (logging the error by default), and the actor will be stopped."
     // i.e. RecoveryFailure is deprecated and instead onRecoveryFailure is called automatically. So comment out:
-    //case RecoveryFailure(cause) =>
-    //  log.error(cause, "Failed to recover!")
+    case RecoveryFailure(cause) =>
+      log.error(cause, "Failed to recover!")
 
     case RecoveryCompleted =>
       log.info("Recovery completed!")
@@ -51,6 +51,8 @@ class CQRSCommandHandler extends PersistentActor with ActorLogging {
         if (recoveryFinished) {
           // If not in recovery, inform client that registration succeeded:
           sender() ! registered
+          // To get the CQRSEventHandler to persist registration to postgres, we need to publish that event:
+          context.system.eventStream.publish(registered)
         }
     }
 }

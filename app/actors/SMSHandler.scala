@@ -15,6 +15,10 @@ class SMSHandler(connection: ActorRef) extends Actor with ActorLogging {
   lazy val commandHandler = context.actorSelection(
     "akka://application/user/sms/commandHandler")
 
+  lazy val queryHandler = context.actorSelection(
+    "akka://application/user/sms/queryHandler"
+  )
+
   val MessagePattern = """[\+]([0-9]*) (.*)""".r  //Pattern for matching incoming msgs
   val RegistrationPattern = """register (.*)""".r //Pattern for valid registration-command
   def receive = {
@@ -32,6 +36,8 @@ class SMSHandler(connection: ActorRef) extends Actor with ActorLogging {
               commandHandler ! SubscribeMentions(number)
             case "connect" =>
               commandHandler ! ConnectUser(number)
+            case "mentions today" =>
+              queryHandler ! MentionsToday(number)
             case other =>
               log.warning(s"Invalid message: $other")
               sender() ! Write(ByteString("Invalid message format\n"))
@@ -44,6 +50,8 @@ class SMSHandler(connection: ActorRef) extends Actor with ActorLogging {
       case MentionReceived(id, created, from, text, _) =>
         connection ! Write(ByteString(s"mentioned by @$from: $text\n"))
         sender() ! AcknowledgeMention(id)
+      case DailyMentionsCount(count) =>
+        connection ! Write(ByteString(s"$count mentions today\n"))
       case UnknownUser(number) =>
         connection ! Write(ByteString(s"Unknown user $number\n"))
       case InvalidCommand(reason) =>

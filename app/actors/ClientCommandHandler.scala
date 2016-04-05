@@ -2,7 +2,8 @@ package actors
 
 import java.util.Locale
 
-import akka.actor.{Cancellable, ActorRef, ActorLogging}
+import akka.actor.{ActorLogging, ActorRef, Cancellable}
+import akka.persistence.RecoveryFailure
 //import akka.persistence.{RecoveryCompleted, RecoveryFailure, PersistentActor}
 import akka.persistence.{RecoveryCompleted, PersistentActor}
 import helpers.TwitterCredentials
@@ -34,7 +35,7 @@ class ClientCommandHandler(phoneNumber: String, userName: String) extends Persis
   var unacknowledgedMentions = List.empty[MentionReceived]
 
   override def receiveRecover = {
-    //case RecoveryFailure(cause) => log.error(cause, "Failed to recover!")  //deprecated
+    case RecoveryFailure(cause) => log.error(cause, "Failed to recover!")  //deprecated?
     case RecoveryCompleted => log.info("Recovery completed")
     case evt: Event => handleEvent(evt)
   }

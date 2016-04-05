@@ -29,3 +29,9 @@ case class UnknownUser(phoneNumber: String)
 
 case class InvalidCommand(reason: String)
 
+trait Query
+trait QueryResult
+case class MentionsToday(phoneNumber: String) extends Query
+case class DailyMentionsCount(count: Int) extends QueryResult
+case object QueryFailed extends QueryResult
+

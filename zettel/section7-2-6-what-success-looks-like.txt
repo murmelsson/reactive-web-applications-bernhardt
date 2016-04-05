@@ -1,0 +1,36 @@
+$ telnet localhost 6666
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
++1004 register twitterapi
+Registration successful!
++1004 subscribe mentions
+Mentions subscribed
+^]quit
+
+telnet> quit
+Connection closed.
+
+$ telnet localhost 6666
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
++1004 mentions today
+6 mentions today
+
+
+rwach7=# SELECT * FROM public.twitter_user;
+ id |         created_on         | phone_number | twitter_user_name 
+----+----------------------------+--------------+-------------------
+  1 | 2016-04-05 22:40:29.285+03 | 1004         | twitterapi
+(1 row)
+
+rwach7=# SELECT COUNT (*) FROM public.mentions;
+ count 
+-------
+     6
+(1 row)
+
+rwach7=# 
+
+
