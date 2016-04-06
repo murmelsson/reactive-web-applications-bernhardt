@@ -1,0 +1,67 @@
+[info] - actors.CQRSCommandHandler - Recovery completed!
+[info] - actors.ClientCommandHandler - Subscribed 35801 to mentions
+[info] - actors.ClientCommandHandler - Recovery completed
+[info] - actors.ClientCommandHandler - Subscribed 35802 to mentions
+[info] - actors.ClientCommandHandler - Recovery completed
+[info] - play.api.Play - Application started (Dev)
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T21:42:31.592+03:00)1
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T22:31:54.605+03:00)1
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - actors.SMSHandler - Received message: +35801 connect
+
+[info] - actors.CQRSCommandHandler - Forwarding command-msg ConnectUser(35801) to Actor[akka://application/user/sms/commandHandler/35801#-1960029096]
+[info] - actors.ClientCommandHandler - 35801connected, about to send it 0 mentions
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T21:42:31.592+03:00)1
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T22:31:54.605+03:00)1
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - actors.SMSHandler - Received message: +35803 register murmelsson
+
+[info] - actors.ClientCommandHandler - Recovery completed
+[info] - actors.SMSHandler - Received message: +35803 subscribe mentions
+
+[info] - actors.CQRSCommandHandler - Forwarding command-msg SubscribeMentions(35803) to Actor[akka://application/user/sms/commandHandler/35803#1471283652]
+[info] - actors.ClientCommandHandler - Subscribed 35803 to mentions
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T23:24:47.872+03:00)1
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T22:31:54.605+03:00)1
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T21:42:31.592+03:00)1
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T23:24:47.872+03:00)1
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T21:42:31.592+03:00)1
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T22:31:54.605+03:00)1
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - actors.SMSHandler - Received message: +35803 connect
+
+[info] - actors.CQRSCommandHandler - Forwarding command-msg ConnectUser(35803) to Actor[akka://application/user/sms/commandHandler/35803#1471283652]
+[info] - actors.ClientCommandHandler - 35803connected, about to send it 0 mentions
+[info] - actors.ClientCommandHandler - In fetchMentions for user: murmelsson
+[info] - actors.ClientCommandHandler - In CheckMentions for: murmelsson Some(2016-04-04T23:24:47.872+03:00)1
+[info] - actors.ClientCommandHandler - In mentions.map...
+[info] - actors.ClientCommandHandler - Fetched 0 mentions
+[info] - application - Shutting down connection pool.
+

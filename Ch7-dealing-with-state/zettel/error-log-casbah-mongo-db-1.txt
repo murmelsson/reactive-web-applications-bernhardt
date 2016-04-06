@@ -1,0 +1,17 @@
+[info] - actors.SMSServer - SMS-server listening on /127.0.0.1:6666
+[info] - play.api.Play - Application started (Dev)
+[info] - akka.persistence.mongo.journal.CasbahJournal - Index creation error: Timed out after 10000 ms while waiting for a server that matches AnyServerSelector{}. Client view of cluster state is {type=Unknown, servers=[{address=localhost:27017, type=Unknown, state=Connecting, exception={com.mongodb.MongoException$Network: Exception opening the socket}, caused by {java.net.ConnectException: Connection refused}}]
+[info] - akka.persistence.mongo.journal.CasbahJournal - Index creation error: Timed out after 10000 ms while waiting for a server that matches AnyServerSelector{}. Client view of cluster state is {type=Unknown, servers=[{address=localhost:27017, type=Unknown, state=Connecting, exception={com.mongodb.MongoException$Network: Exception opening the socket}, caused by {java.net.ConnectException: Connection refused}}]
+[info] - akka.persistence.mongo.journal.CasbahJournal - Index creation error: Timed out after 10000 ms while waiting for a server that matches AnyServerSelector{}. Client view of cluster state is {type=Unknown, servers=[{address=localhost:27017, type=Unknown, state=Connecting, exception={com.mongodb.MongoException$Network: Exception opening the socket}, caused by {java.net.ConnectException: Connection refused}}]
+
+[error] - akka.actor.OneForOneStrategy - Processor killed after recovery failure (persistent id = [CQRSCommandHandler]). To avoid killing processors on recovery failure, a processor must handle RecoveryFailure messages. RecoveryFailure was caused by: com.mongodb.MongoTimeoutException: Timed out after 10000 ms while waiting to connect. Client view of cluster state is {type=Unknown, servers=[{address=localhost:27017, type=Unknown, state=Connecting, exception={com.mongodb.MongoException$Network: Exception opening the socket}, caused by {java.net.ConnectException: Connection refused}}]
+
+akka.actor.ActorKilledException: Processor killed after recovery failure (persistent id = [CQRSCommandHandler]). To avoid killing processors on recovery failure, a processor must handle RecoveryFailure messages. RecoveryFailure was caused by: com.mongodb.MongoTimeoutException: Timed out after 10000 ms while waiting to connect. Client view of cluster state is {type=Unknown, servers=[{address=localhost:27017, type=Unknown, state=Connecting, exception={com.mongodb.MongoException$Network: Exception opening the socket}, caused by {java.net.ConnectException: Connection refused}}]
+
+[info] - actors.SMSHandler - Received message: +358123 register murmelsson
+
+[info] - akka.actor.EmptyLocalActorRef - Message [actors.RegisterUser] from Actor[akka://application/user/sms/$a/$a#2126144540] to Actor[akka://application/user/sms/commandHandler] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[info] - application - Shutting down connection pool.
+
+[success] Total time: 218 s, completed Apr 3, 2016 11:54:34 PM
+

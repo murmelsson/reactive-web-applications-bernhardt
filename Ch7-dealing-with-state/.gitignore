@@ -1,0 +1,13 @@
+/conf/application.conf
+/conf/chapter7.xml
+/conf/twitter.conf
+logs
+target
+/.idea
+/.idea_modules
+/.classpath
+/.project
+/.settings
+/RUNNING_PID
+project/project
+project/target
