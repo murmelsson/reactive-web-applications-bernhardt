@@ -10,7 +10,7 @@ object DashboardApp extends JSApp {
     //document.getElementById("scalajs").innerHTML =
     //  "Hello from Scala.js!!"
 
-    val module = angular.createModule("dashboard", Seq("ngRoute"))
+    val module = angular.createModule("dashboard", Seq("ngRoute", "ngWebSocket"))
 
     module.controllerOf[DashboardCtrl]
     module.config { ($routeProvider: RouteProvider) =>

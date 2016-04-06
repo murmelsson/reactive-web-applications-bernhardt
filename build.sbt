@@ -28,7 +28,9 @@ lazy val client = (project in file("modules/client")).settings(
   jsDependencies ++= Seq(
     "org.webjars.bower" % "angular" % "1.4.0" / "angular.min.js",
     "org.webjars.bower" % "angular-route" % "1.4.0" /
-      "angular-route.min.js" dependsOn "angular.min.js"
+      "angular-route.min.js" dependsOn "angular.min.js",
+    "org.webjars.bower" % "angular-websocket" % "1.0.13" /
+      "dist/angular-websocket.min.js" dependsOn "angular.min.js"
   ),
   skip in packageJSDependencies := false
 ).enablePlugins(ScalaJSPlugin, ScalaJSPlay, SbtWeb)
