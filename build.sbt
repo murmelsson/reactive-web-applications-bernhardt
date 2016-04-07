@@ -11,7 +11,12 @@ lazy val `ch08` = (project in file(".")).settings(
   scalaJSProjects := Seq(client),
   pipelineStages := Seq(scalaJSProd),
   libraryDependencies ++= Seq(
-    "com.vmunier" %% "play-scalajs-scripts" % "0.2.2"
+    "com.vmunier" %% "play-scalajs-scripts" % "0.2.2",
+    jdbc,
+    "org.postgresql" % "postgresql" % "9.3-1101-jdbc4",
+    "org.jooq" % "jooq" % "3.7.0",
+    "org.jooq" % "jooq-codegen-maven" % "3.7.0",
+    "org.jooq" % "jooq-meta" % "3.7.0"
   ),
   WebKeys.importDirectly := true
 ).enablePlugins(PlayScala).dependsOn(client).aggregate(client)
@@ -35,5 +40,15 @@ lazy val client = (project in file("modules/client")).settings(
   skip in packageJSDependencies := false
 ).enablePlugins(ScalaJSPlugin, ScalaJSPlay, SbtWeb)
 
+val generateJOOQ = taskKey[Seq[File]]("Generate JooQ classes")
+
+val generateJOOQTask = (sourceManaged, fullClasspath in Compile, runner in Compile, streams) map { (src, cp, r, s) =>
+  toError(r.run("org.jooq.util.GenerationTool", cp.files, Array("conf/chapter7.xml"), s.log))
+  ((src / "main/generated") ** "*.scala").get
+}
+
+generateJOOQ <<= generateJOOQTask
+
+unmanagedSourceDirectories in Compile += sourceManaged.value / "main/generated"
 
 

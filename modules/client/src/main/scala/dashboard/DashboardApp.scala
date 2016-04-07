@@ -12,7 +12,10 @@ object DashboardApp extends JSApp {
 
     val module = angular.createModule("dashboard", Seq("ngRoute", "ngWebSocket"))
 
+    module.serviceOf[GraphDataService]
+
     module.controllerOf[DashboardCtrl]
+
     module.config { ($routeProvider: RouteProvider) =>
       $routeProvider
         .when("/dashboard", Route(
