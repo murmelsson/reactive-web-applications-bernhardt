@@ -29,10 +29,12 @@ class GraphDataService($websocket: WebsocketService) extends Service {
 
   dataStream.onClose { (event: CloseEvent) =>
     //growl.error(s"Server connection closed, attempting to reconnect")
+    console.log("ws-connection closed")
   }
 
   dataStream.onOpen { (event: Dynamic) =>
     //growl.info("Server connection established")
+    console.log("ws-connection opened")
   }
 }
 
