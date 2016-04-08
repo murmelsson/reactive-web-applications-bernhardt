@@ -1,0 +1,6 @@
+Welcome to your Play application's JavaScript!
+System.scala:305 In angularService 'GraphDataService', about to connect to websocket-endpoint...
+System.scala:305 In GDS fetchGraph
+System.scala:305 ws-connection opened
+GraphDataService.scala:44 In GDS dataStream.onMessage with Event[object MessageEvent]
+DashboardCtrl.scala:15 Object {graph_type: "MonthlySubscriptions", labels: Array[30], series: Array[1], data: Array[1]}

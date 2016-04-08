@@ -25,17 +25,35 @@ object Application extends Controller {
 
   // Define a Websocket endpoint which listens for incoming messages
   // and returns graph-data to answer MonthlySubscriptions msg:
+  // def graphs: WebSocket[String, JsValue]
   def graphs = WebSocket.acceptWithActor[String, JsValue] {
     request => out => DashboardClient.props(out)
   }
+  /**
+    * play.api.mvc.WebSocket
+    * def acceptWithActor[In, Out](f: (RequestHeader) => WebSocket.HandlerProps)
+    * (implicit in: WebSocket.FrameFormatter[In],
+                             out: WebSocket.FrameFormatter[Out],
+                             app: Application,
+                             outMessageType: ClassTag[Out]): WebSocket[In, Out]
+    *Create a WebSocket that will pass messages to/from the actor created by the given props.
+    * Given a request and an actor ref to send messages to, the function passed should return the props
+    * for an actor to create to handle this WebSocket. For example:
+    *  def webSocket = WebSocket.acceptWithActor[JsValue, JsValue] { req => out =>
+    *    MyWebSocketActor.props(out)
+    *  }
+    */
 
 }
 
 class DashboardClient(out: ActorRef) extends Actor {
   def graphType(s: String) = GraphType.withName(s)
   def receive = {
+
     case t: String => graphType(t) match {
       case GraphType.MonthlySubscriptions =>
+        println("In caseGraphTypeMonthlySubs")
+
         val mentionsCount = DB.withConnection { connection =>
           val sql = using(connection, SQLDialect.POSTGRES_9_3)
 

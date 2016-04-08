@@ -37,4 +37,5 @@ trait WebsocketDataStream extends js.Object {
   def onOpen(callback: js.Function1[js.Dynamic, Unit]): Unit = js.native
 }
 
-/** The only specific aspect to AngularJS in this façade is the use of the ProvidedService trait which eases service discovery - in order to wrap any Javascript library it is sufficient to extend js.Object . */
+/** The only specific aspect to AngularJS in this façade is the use of the ProvidedService trait which eases
+  *  service discovery - in order to wrap any Javascript library it is sufficient to extend js.Object . */
