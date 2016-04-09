@@ -43,6 +43,7 @@ class GraphDataService($websocket: WebsocketService) extends Service {
   //     $scope.monthlySubscriptions = graphData
   dataStream.onMessage { (event: MessageEvent) =>
     console.log("In GDS dataStream.onMessage with Event" + event)
+    println("pln In GDS dataStream.onMessage with Event" + event)
     val json: Dynamic = JSON.parse(event.data.toString)
     val graphType = GraphType.withName(json.graph_type.toString)  //scala.Enumeration
                                                                   //final def withName(s: String): Enumeration.this.Value
@@ -54,6 +55,7 @@ class GraphDataService($websocket: WebsocketService) extends Service {
       callback(json)   // callback: (Dynamic) => Unit
     } getOrElse {
       console.log(s"Unknown graph type $graphType")
+      println(s"pln Unknown graph type $graphType")
     }
   }
 

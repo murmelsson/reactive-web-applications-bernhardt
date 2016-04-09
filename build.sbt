@@ -16,7 +16,9 @@ lazy val `ch08` = (project in file(".")).settings(
     "org.postgresql" % "postgresql" % "9.3-1101-jdbc4",
     "org.jooq" % "jooq" % "3.7.0",
     "org.jooq" % "jooq-codegen-maven" % "3.7.0",
-    "org.jooq" % "jooq-meta" % "3.7.0"
+    "org.jooq" % "jooq-meta" % "3.7.0",
+    "org.webjars" %% "webjars-play" % "2.4.0",
+    "org.webjars.bower" % "angular-chart.js" % "0.7.1"
   ),
   WebKeys.importDirectly := true
 ).enablePlugins(PlayScala).dependsOn(client).aggregate(client)
@@ -28,16 +30,21 @@ lazy val client = (project in file("modules/client")).settings(
   scalaJSStage in Global := FastOptStage,
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "0.9.0",
-    "biz.enef" %%% "scalajs-angulate" % "0.2"
+    "biz.enef" %%% "scalajs-angulate" % "0.2",
+    "com.lihaoyi"  %%% "utest" % "0.3.1" % "test"
   ),
   jsDependencies ++= Seq(
     "org.webjars.bower" % "angular" % "1.4.0" / "angular.min.js",
     "org.webjars.bower" % "angular-route" % "1.4.0" /
       "angular-route.min.js" dependsOn "angular.min.js",
     "org.webjars.bower" % "angular-websocket" % "1.0.13" /
-      "dist/angular-websocket.min.js" dependsOn "angular.min.js"
+      "dist/angular-websocket.min.js" dependsOn "angular.min.js",
+    "org.webjars.bower" % "Chart.js" % "1.0.2" / "Chart.min.js",
+    "org.webjars.bower" % "angular-chart.js" % "0.7.1" / 
+      "dist/angular-chart.js" dependsOn "Chart.min.js"
   ),
-  skip in packageJSDependencies := false
+  skip in packageJSDependencies := false,
+  testFrameworks += new TestFramework("utest.runner.Framework")
 ).enablePlugins(ScalaJSPlugin, ScalaJSPlay, SbtWeb)
 
 val generateJOOQ = taskKey[Seq[File]]("Generate JooQ classes")
