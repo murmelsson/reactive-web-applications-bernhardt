@@ -5,8 +5,8 @@ import org.scalajs.dom._
 import scala.scalajs.js.{Dynamic, JSON}
 import scala.collection._
 
-class GraphDataService($websocket: WebsocketService) extends Service {
-//class GraphDataService($websocket: WebsocketService, growl: GrowlService) extends Service {
+//class GraphDataService($websocket: WebsocketService) extends Service {
+class GraphDataService($websocket: WebsocketService, growl: GrowlService) extends Service {
   println("In angularService 'GraphDataService', about to connect to websocket-endpoint...")
   // Connect to Websocket endpoint (defined via route: /graphs to Application.graphs-method,
   // which then passes its ActorRef to Application.DashboardClient, which gets data from Postgres
@@ -43,7 +43,6 @@ class GraphDataService($websocket: WebsocketService) extends Service {
   //     $scope.monthlySubscriptions = graphData
   dataStream.onMessage { (event: MessageEvent) =>
     console.log("In GDS dataStream.onMessage with Event" + event)
-    println("pln In GDS dataStream.onMessage with Event" + event)
     val json: Dynamic = JSON.parse(event.data.toString)
     val graphType = GraphType.withName(json.graph_type.toString)  //scala.Enumeration
                                                                   //final def withName(s: String): Enumeration.this.Value
@@ -55,17 +54,16 @@ class GraphDataService($websocket: WebsocketService) extends Service {
       callback(json)   // callback: (Dynamic) => Unit
     } getOrElse {
       console.log(s"Unknown graph type $graphType")
-      println(s"pln Unknown graph type $graphType")
     }
   }
 
   dataStream.onClose { (event: CloseEvent) =>
-    //growl.error(s"Server connection closed, attempting to reconnect")
+    growl.error(s"Server connection closed, attempting to reconnect")
     println("ws-connection closed")
   }
 
   dataStream.onOpen { (event: Dynamic) =>
-    //growl.info("Server connection established")
+    growl.info("Server connection established")
     println("ws-connection opened")
   }
 }

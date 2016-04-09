@@ -1,0 +1,29 @@
+[scalangular-play] $ test
+[trace] Stack trace suppressed: run last client/test:loadedTestFrameworks for the full output.
+[error] (client/test:loadedTestFrameworks) Exception while running JS code: ReferenceError: "java" is not defined. (env.rhino.js#1391)
+[error] Total time: 10 s, completed Apr 10, 2016 1:11:30 AM
+[scalangular-play] $ exit
+
+...
+add to build.sbt just after: 
+scalaJSStage in Global := FastOptStage
+...this "directive":
+scalaJSUseRhino in Global := false
+...
+
+murmeister@murmeister-X202E:~/scalageneric/reactive-web-applications-bernhardt (Ch8-scala-js-angular)$ sbt
+[info] Loading project definition from /home/murmeister/scalageneric/reactive-web-applications-bernhardt/project
+[info] Set current project to scalangular-play (in build file:/home/murmeister/scalageneric/reactive-web-applications-bernhardt/)
+[scalangular-play] $ test
+In angularService 'GraphDataService', about to connect to websocket-endpoint...
+[info] 1/2     services.GraphDataServiceSuite.GraphDataService should initialise a WebSocket connection		Success
+[info] 2/2     services.GraphDataServiceSuite		Success
+[info] -----------------------------------Results-----------------------------------
+[info] services.GraphDataServiceSuite		Success
+[info]     GraphDataService should initialise a WebSocket connection		Success
+[info] 
+[info] Tests: 2
+[info] Passed: 2
+[info] Failed: 0
+[success] Total time: 19 s, completed Apr 10, 2016 1:20:31 AM
+[scalangular-play] $ 

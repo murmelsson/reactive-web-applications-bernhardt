@@ -2,8 +2,6 @@ name := """scalangular-play"""
 
 version := "1.0-SNAPSHOT"
 
-//lazy val root = (project in file(".")).enablePlugins(PlayScala)
-
 lazy val scalaV = "2.11.7"
 
 lazy val `ch08` = (project in file(".")).settings(
@@ -18,7 +16,8 @@ lazy val `ch08` = (project in file(".")).settings(
     "org.jooq" % "jooq-codegen-maven" % "3.7.0",
     "org.jooq" % "jooq-meta" % "3.7.0",
     "org.webjars" %% "webjars-play" % "2.4.0",
-    "org.webjars.bower" % "angular-chart.js" % "0.7.1"
+    "org.webjars.bower" % "angular-chart.js" % "0.7.1",
+    "org.webjars.bower" % "angular-growl-2" % "0.7.4"
   ),
   WebKeys.importDirectly := true
 ).enablePlugins(PlayScala).dependsOn(client).aggregate(client)
@@ -28,6 +27,7 @@ lazy val client = (project in file("modules/client")).settings(
   persistLauncher := true,
   persistLauncher in Test := false,
   scalaJSStage in Global := FastOptStage,
+  scalaJSUseRhino in Global := false,
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "0.9.0",
     "biz.enef" %%% "scalajs-angulate" % "0.2",
@@ -41,7 +41,9 @@ lazy val client = (project in file("modules/client")).settings(
       "dist/angular-websocket.min.js" dependsOn "angular.min.js",
     "org.webjars.bower" % "Chart.js" % "1.0.2" / "Chart.min.js",
     "org.webjars.bower" % "angular-chart.js" % "0.7.1" / 
-      "dist/angular-chart.js" dependsOn "Chart.min.js"
+      "dist/angular-chart.js" dependsOn "Chart.min.js",
+    "org.webjars.bower" % "angular-growl-2" % "0.7.4" /  "build/angular-growl.min.js",
+    RuntimeDOM % "test"
   ),
   skip in packageJSDependencies := false,
   testFrameworks += new TestFramework("utest.runner.Framework")
