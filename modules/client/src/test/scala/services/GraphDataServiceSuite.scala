@@ -7,7 +7,7 @@ import utest._
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.JSExportAll
-/**
+
 // Extend TestSuite so the object can be discovered by test-runner
 object GraphDataServiceSuite extends TestSuite {
   val tests = TestSuite {
@@ -36,10 +36,10 @@ object GraphDataServiceSuite extends TestSuite {
 
 
 // Export all public members of the mocked class to JavaScript:
-//@JSExportAll
+@JSExportAll
 class GrowlServiceMock
 
-//@JSExportAll
+@JSExportAll
 class WebsocketDataStreamMock {
   val isInitialized = true
   def send[T](data: js.Any): HttpPromise[T] = ???
@@ -50,8 +50,6 @@ class WebsocketDataStreamMock {
   def onClose(callback: js.Function1[CloseEvent, Unit]): Unit = {}
   def onOpen(callback: js.Function1[js.Dynamic, Unit]): Unit = {}
 }
-
-*/
 
 /**
   * (Section 8.4.1 end of) "Since there is no mocking library that runs with Scala.js yet we need to mock the
