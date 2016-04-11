@@ -1,13 +1,19 @@
 package services
 
 import javax.inject._
+
 import akka.actor._
+import akka.stream._
+import akka.stream.scaladsl._
+import org.reactivestreams.Publisher
 import play.api._
 import play.api.libs.iteratee._
 import play.api.libs.json._
 import play.api.libs.oauth._
+import play.api.libs.streams.Streams
 import play.api.libs.ws._
 import play.extras.iteratees._
+
 import scala.concurrent.ExecutionContext
 
 class TwitterStreamService @Inject() (
@@ -44,7 +50,7 @@ class TwitterStreamService @Inject() (
         // Pass in the Iteratee as a consumer. The stream will flow through this Iteratee to the joined Enumerator
         iteratee
       }.map { _ =>
-        Logger.info("Twitter stream cloased")
+        Logger.info("Twitter stream closed")
       }
 
     // Transform stream by decoding and parsing it:
@@ -87,12 +93,12 @@ class TwitterStreamService @Inject() (
     // Defining our custom junction by extending FlexiRoute
     class SplitByTopic[A <: JsObject]
     extends FlexiRoute[A, SplitByTopicShape[A]](
-      new SplitByTopicSHape, Atrributes.name("SplitByTopic")
+      new SplitByTopicShape, Attributes.name("SplitByTopic")
     ) {
       import FlexiRoute._
 
       // Defining the routing logic of our junction where we will define how elements get routed
-      override def createRouteLogic(p: portT) = new RouteLogic[A] {
+      override def createRouteLogic(p: PortT) = new RouteLogic[A] {
         // Extracting the first topic out of a tweet. We will effectively split using only the first
         // topic in this example:
         def extractFirstHashTag(tweet: JsObject) = 
@@ -147,8 +153,8 @@ class TwitterStreamService @Inject() (
 
         // Add the groupers to the graph, one for each topic. 
         // These will group N elements together depending on the digest-rate of each topic:
-        val groupers = topicsAndDIgestRate.map { case (topic, rate) =>
-          topic -> builder.addFlow[JsObject].grouped(rate))
+        val groupers = topicsAndDigestRate.map { case (topic, rate) =>
+          topic -> builder.add(Flow[JsObject].grouped(rate))
         }
 
         // Add the taggers to the graph, one for each topic. These will take the grouped
@@ -169,9 +175,9 @@ class TwitterStreamService @Inject() (
         // Connect our source to splitter's inlet:
         builder.addEdge(in, splitter.in)
         // Do wiring foreach splitter-outlet:
-        splitter.topicOutlets.zipWithIndex.map { case ((topic, port), index) =>
+        splitter.topicOutlets.zipWithIndex.foreach { case ((topic, port), index) =>
           val grouper = groupers(topic)
-          val tagger = tagger(topic)
+          val tagger = taggers(topic)
           // Connect splitter-outlet(i.e. a substream) to topic-grouper:
           builder.addEdge(port, grouper.inlet)
           // Connect grouper-outlet to tagger-inlet:
@@ -182,6 +188,22 @@ class TwitterStreamService @Inject() (
 
         // Connect merger-outlet to (output!!-)Publisher-inlet:
         builder.addEdge(merger.out, out.inlet)
+        //--to slow down the flow, can add into TwitterStreamService just before passing stream to Sink (replacing "builder.addEdge(merger.out, out.inlet)", the following:
+        /**
+        val sleeper = builder.add(Flow[JsValue].map { element =>
+          Thread.sleep(5000)
+          element
+        })
+        builder.addEdge(merger.out, sleeper.inlet)
+        builder.addEdge(sleeper.outlet, out.inlet) */
+        // Leads to this kind of output with e.g. http://localhost:9000/?topic=cats:1&topic=dogs:2
+        // [info] - application - Status: 200
+        // [info] - application - Status: 420
+        // [info] - application - Twitter stream closed
+        // etymology of the http-status-code 420 acc. wikipedia: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_Client_Error
+        // 420 Enhance Your Calm (Twitter)
+        // Returned by version 1 of the Twitter Search and Trends API when the client is being rate limited;
+
 
       }//graph
       
@@ -190,11 +212,19 @@ class TwitterStreamService @Inject() (
       Streams.publisherToEnumerator(publisher)
 
     } getOrElse {
-      Logger.error("Twitter credentials are not configured")
+      Logger.error("Twitter credentials are not configured right")
       Enumerator.empty[JsValue]
     }//credentials.map
 
   }//def-stream
+
+  private def credentials = for {
+    apiKey <- configuration.getString("twitter.apiKey")
+    apiSecret <- configuration.getString("twitter.apiSecret")
+    token <- configuration.getString("twitter.accessToken")
+    tokenSecret <- configuration.getString("twitter.accessTokenSecret")
+  } yield
+    (ConsumerKey(apiKey, apiSecret), RequestToken(token, tokenSecret))
 
 }
 
