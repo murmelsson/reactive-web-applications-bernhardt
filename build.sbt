@@ -1,4 +1,4 @@
-name := """first-play-scala-app"""
+name := """simple-app-deploy-it"""
 
 version := "1.0-SNAPSHOT"
 
@@ -10,7 +10,9 @@ libraryDependencies ++= Seq(
   jdbc,
   cache,
   ws,
-  specs2 % Test
+  specs2 % Test,
+  "org.webjars" %% "webjars-play" % "2.4.0-1",
+  "org.webjars" % "jquery" % "2.1.4"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"

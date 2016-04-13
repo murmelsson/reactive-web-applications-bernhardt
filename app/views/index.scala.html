@@ -1,7 +1,8 @@
-@(message: String)
+@(message: String)(implicit request: RequestHeader)
 
-@main("Welcome to Play") {
+@main(message) {
 
-    @play20.welcome(message)
+    <button id="button">Click me!</button>
+    <div id="text"></div>
 
 }
