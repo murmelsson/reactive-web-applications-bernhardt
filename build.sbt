@@ -1,8 +1,16 @@
+// Need this import to avoid type error in expression: not found : value ServerLoader
+// when loading project to sbt:
+import com.typesafe.sbt.packager.archetypes.ServerLoader
+
 name := """simple-app-deploy-it"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(
+  PlayScala,
+  DebianPlugin,
+  JavaServerAppPackaging
+)
 
 scalaVersion := "2.11.7"
 
@@ -28,3 +36,14 @@ pipelineStages := Seq(rjs)
 RjsKeys.mainModule := "application"
 
 RjsKeys.mainConfig := "application"
+
+maintainer := "dylan drummond <dylan@murmelssonic.fi>"
+
+packageSummary in Linux := "simple-app-deploy-it, a PlayFramework app"
+
+packageDescription := "This package installs the simple-app-deploy-it (following Ch10 of Manuel Bernhardt's most excellent book (Reactive Web Applications))"
+
+serverLoading in Debian := ServerLoader.Systemd
+
+dockerExposedPorts in Docker := Seq(9000, 9443)
+
