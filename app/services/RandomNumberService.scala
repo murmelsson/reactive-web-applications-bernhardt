@@ -1,6 +1,8 @@
 package services
 
 import scala.concurrent.Future
+import scala.util.control.NonFatal
+import scala.concurrent.ExecutionContext.Implicits._
 
 // Define services via some trait, as this makes swapping implementations easier e.g. for testing:
 trait RandomNumberService {
@@ -9,7 +11,14 @@ trait RandomNumberService {
 
 class DiceDrivenRandomNumberService(dice: DiceService)
 extends RandomNumberService {
-  override def generateRandomNumber: Future[Int] = dice.throwDice
+  //override def generateRandomNumber: Future[Int] = dice.throwDice
+  // Replace first implementation of generateRandomNumber with a more resilient version: 
+  var tries = 1
+  override def generateRandomNumber: Future[Int] = dice.throwDice.recoverWith {
+    case NonFatal(t) if tries < 5 => 
+      tries += 1             //so we allow 5 tries in total
+      generateRandomNumber   //i.e. retry itself
+  }
 }
 
 trait DiceService {

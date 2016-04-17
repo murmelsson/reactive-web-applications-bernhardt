@@ -1,5 +1,6 @@
 package services
 
+import java.util.concurrent.atomic.AtomicInteger
 import org.scalatest.time.{Millis, Span}
 import org.scalatest.{ShouldMatchers, FlatSpec}
 import org.scalatest.concurrent.ScalaFutures
@@ -32,5 +33,27 @@ extends FlatSpec with ScalaFutures with ShouldMatchers {
       //Check result is correct:
       result shouldBe(4)
     }
-  }//service-should
+  }//service-should-return-num
+
+  it should "be able to cope with problematic dice throws" in {
+    val overzealousDiceThrowingService = new DiceService {
+      //Good old Java5 AtomicInteger for threadsafer counting:
+      val counter = new AtomicInteger()
+      override def throwDice: Future[Int] = {
+        val count = counter.incrementAndGet()
+        if (count % 5 == 0) {
+          Future.successful(4)
+        } else {
+          Future.failed(new RuntimeException("The die landed on a vertex and just spun to a vertexy standstill!!"))
+        }
+      }//throwDice
+    }//overzealous-val
+
+    val randomNumberService = new DiceDrivenRandomNumberService(overzealousDiceThrowingService)
+
+    whenReady(randomNumberService.generateRandomNumber) { result =>
+      result shouldBe(4)   //which half the time it won't be
+    }
+  }//service-should-cope-with-future-failure
+
 }
