@@ -1,0 +1,13 @@
+@()(implicit flash: Flash)
+
+@main("Welcome!") {
+
+  @flash.get("result").map { result => 
+    <p>@result</p>
+  }
+
+  @helper.form(routes.Application.compute()) {
+    <button type="submit">Get a random number</button>
+  }
+
+}
